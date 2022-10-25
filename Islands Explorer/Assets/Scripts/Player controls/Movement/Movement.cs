@@ -98,38 +98,6 @@ public class Movement : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        /*if (lastXAxisInput == 0)
-        {
-            accumulatedMovement.x = DecelerateInAxis(accumulatedMovement.x);
-        }
-        if (lastZAxisInput == 0)
-        {
-            accumulatedMovement.z = DecelerateInAxis(accumulatedMovement.z);
-        }
-
-        ApplyGravity();
-
-        lastXAxisInput = 0;
-        lastZAxisInput = 0;*/
-
-        //Debug.Log(rb.velocity);
-    }
-
-    private float DecelerateInAxis(float axisValue)
-    {
-        if (axisValue == 0)
-        {
-            return 0;
-        }
-
-        float signCorrectedDeceleration = Math.Sign(axisValue) * so.Deceleration;
-        float deceleratedValue = axisValue - signCorrectedDeceleration;
-
-        return Math.Abs(deceleratedValue) <= 0 ? 0 : deceleratedValue;
-    }
-
     private void ApplyGravity()
     {
         //TODO: If is grounded, do nothing
