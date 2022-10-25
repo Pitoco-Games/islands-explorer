@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c0a6701e275111409e9cfda42abd34e, type: 3}
   m_Name: PlayerMovementStats
   m_EditorClassIdentifier: 
-  MaxVelocity: 2000
+  MaxVelocity: 500
   Acceleration: 20
   Deceleration: 50
-  TurnSpeed: 560
+  TurnSpeed: 800
   JumpStrength: 100
   Gravity: 10
   MovementAngleLimitToReverse: 90
