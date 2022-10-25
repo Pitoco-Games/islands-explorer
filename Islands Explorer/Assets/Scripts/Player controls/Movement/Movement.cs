@@ -40,8 +40,10 @@ public class Movement : MonoBehaviour
 
         if (xAxisInput != 0 || zAxisInput != 0)
         {
-            calculatedDirection.x = xAxisInput;
-            calculatedDirection.z = zAxisInput;
+            var cameraRelativeMoveDirection = CalculateCameraRelativeMoveDirection(xAxisInput, zAxisInput);
+
+            calculatedDirection.x = cameraRelativeMoveDirection.x;
+            calculatedDirection.z = cameraRelativeMoveDirection.z;
             if (Vector3.Angle(targetTransform.forward, calculatedDirection) > so.MovementAngleLimitToReverse)
             {
                 if (rb.velocity.magnitude == 0)
@@ -68,13 +70,18 @@ public class Movement : MonoBehaviour
 
     private void RotateCharacterTowardsMoveDirection(float xAxisInput, float zAxisInput, float turnSpeed)
     {
-        Vector3 right = camera.right;
-        Vector3 forward = Vector3.Cross(right, Vector3.up);
-
-        Vector3 direction = (right * xAxisInput) + (forward * zAxisInput);
+        var direction = CalculateCameraRelativeMoveDirection(xAxisInput, zAxisInput);
         Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);
         targetTransform.rotation =
             Quaternion.RotateTowards(targetTransform.rotation, toRotation, turnSpeed * Time.deltaTime);
+    }
+
+    private Vector3 CalculateCameraRelativeMoveDirection(float xAxisInput, float zAxisInput)
+    {
+        Vector3 right = camera.right;
+        Vector3 forward = Vector3.Cross(right, Vector3.up);
+
+        return (right * xAxisInput) + (forward * zAxisInput);
     }
 
     private void DecelerateFromWalk(float deceleration)
