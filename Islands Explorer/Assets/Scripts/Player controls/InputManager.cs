@@ -17,7 +17,7 @@ public class InputManager : MonoBehaviour
         var zAxisInput = Input.GetAxisRaw("Vertical");
         var zMovement = 0;
 
-        if (Input.GetKey("space"))
+        if (Input.GetKeyDown("space"))
         {
             movement.Jump();
         }
