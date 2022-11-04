@@ -5,6 +5,12 @@ public class InputManager : MonoBehaviour
 {
     [SerializeField] private Movement movement;
 
+    private void Awake()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     void Update()
     {
         var xAxisInput = Input.GetAxisRaw("Horizontal");
