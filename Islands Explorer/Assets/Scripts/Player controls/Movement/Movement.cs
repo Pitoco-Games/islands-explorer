@@ -5,32 +5,32 @@ using UnityEngine;
 
 public class Movement : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private MovementStatsSO so;
     [SerializeField] private Rigidbody rb;
     [SerializeField] private Transform targetTransform;
     [SerializeField] private Transform camera;
+    [SerializeField] private CollisionDetector groundedDetector;
+    [SerializeField] private SlopeDetector slopeDetector;
 
-    private float accumulatedWalkVelocity;
-
-    private Vector3 calculatedDirection;
+    private float accumulatedHorizontalVelocity;
+    private float accumulatedVerticalVelocity;
     private float lastXAxisInput;
     private float lastZAxisInput;
+    private List<RaycastHit> currRaycastHits;
+    private bool slopeIsClimbable;
 
     private bool isReversing;
-
-    private void Start()
-    {
-        calculatedDirection = Vector3.zero;
-    }
+    private bool isGrounded;
+    private bool jumped;
 
     public void Walk(float xAxisInput, float zAxisInput)
     {
         if (isReversing)
         {
             DecelerateFromWalk(so.ReverseDeceleration);
-            rb.velocity = targetTransform.forward * (accumulatedWalkVelocity * Time.deltaTime);
 
-            if (rb.velocity.magnitude == 0)
+            if (accumulatedHorizontalVelocity == 0)
             {
                 isReversing = false;
             }
@@ -42,11 +42,9 @@ public class Movement : MonoBehaviour
         {
             var cameraRelativeMoveDirection = CalculateCameraRelativeMoveDirection(xAxisInput, zAxisInput);
 
-            calculatedDirection.x = cameraRelativeMoveDirection.x;
-            calculatedDirection.z = cameraRelativeMoveDirection.z;
-            if (Vector3.Angle(targetTransform.forward, calculatedDirection) > so.MovementAngleLimitToReverse)
+            if (Vector3.Angle(targetTransform.forward, cameraRelativeMoveDirection) > so.MovementAngleLimitToReverse)
             {
-                if (rb.velocity.magnitude == 0)
+                if (accumulatedHorizontalVelocity == 0)
                 {
                     RotateCharacterTowardsMoveDirection(xAxisInput, zAxisInput, so.TurnSpeed);
                 }
@@ -58,8 +56,8 @@ public class Movement : MonoBehaviour
             }
             else
             {
-                var newWalkVelocity = accumulatedWalkVelocity + so.Acceleration;
-                accumulatedWalkVelocity = newWalkVelocity > so.MaxVelocity ? so.MaxVelocity : newWalkVelocity;
+                var newWalkVelocity = accumulatedHorizontalVelocity + so.Acceleration;
+                accumulatedHorizontalVelocity = newWalkVelocity > so.MaxVelocity ? so.MaxVelocity : newWalkVelocity;
                 RotateCharacterTowardsMoveDirection(xAxisInput, zAxisInput, so.TurnSpeed);
             }
         }
@@ -86,29 +84,77 @@ public class Movement : MonoBehaviour
 
     private void DecelerateFromWalk(float deceleration)
     {
-        var newWalkVelocity = accumulatedWalkVelocity - deceleration;
-        accumulatedWalkVelocity = newWalkVelocity <= 0 ? 0 : newWalkVelocity;
+        var newWalkVelocity = accumulatedHorizontalVelocity - deceleration;
+        accumulatedHorizontalVelocity = newWalkVelocity <= 0 ? 0 : newWalkVelocity;
     }
 
     public void Jump()
     {
-        calculatedDirection.y += so.JumpStrength;
+        if (isGrounded)
+        {
+            accumulatedVerticalVelocity += so.JumpStrength;
+        }
     }
 
     private void FixedUpdate()
     {
-        rb.velocity = targetTransform.forward * (accumulatedWalkVelocity * Time.deltaTime);
+        isGrounded = groundedDetector.OverlapSphereIsColliding();
+        currRaycastHits = slopeDetector.GetAllHits();
+        slopeIsClimbable = slopeDetector.GetSlopeIsClimbable(currRaycastHits);
 
-        if (accumulatedWalkVelocity > 0 && lastXAxisInput == 0 && lastZAxisInput == 0)
+        rb.velocity = GetSlopeCorrectedWalkVector() + Vector3.up * accumulatedVerticalVelocity;
+
+        if (accumulatedHorizontalVelocity > 0 && lastXAxisInput == 0 && lastZAxisInput == 0)
         {
             DecelerateFromWalk(so.Deceleration);
+        }
+
+        ApplyGravity();
+    }
+
+    private Vector3 GetSlopeCorrectedWalkVector()
+    {
+        float deltaTimeCorrectedWalkVelocity = accumulatedHorizontalVelocity * Time.deltaTime;
+
+        if (currRaycastHits.Count == 0)
+        {
+            return deltaTimeCorrectedWalkVelocity * targetTransform.forward;
+        }
+
+        if (slopeIsClimbable)
+        {
+            Quaternion slopeRotation = Quaternion.FromToRotation(Vector3.up, currRaycastHits[0].normal);
+            Vector3 adjustedVector = slopeRotation * targetTransform.forward * deltaTimeCorrectedWalkVelocity;
+
+            Debug.DrawRay(transform.position, adjustedVector, Color.blue);
+
+            return adjustedVector;
+        }
+        else
+        {
+            return Vector3.zero;
         }
     }
 
     private void ApplyGravity()
     {
-        //TODO: If is grounded, do nothing
+        if (isGrounded && accumulatedVerticalVelocity < 0 && slopeIsClimbable)
+        {
+            accumulatedVerticalVelocity = 0;
+            return;
+        }
 
-        //movement.y -= gravity;
+        if(!isGrounded || !slopeIsClimbable)
+        {
+            if (accumulatedVerticalVelocity < 0)
+            {
+                accumulatedVerticalVelocity -= so.Gravity * so.FallSpeedMultiplier * Time.deltaTime;
+
+            }
+            else
+            {
+                accumulatedVerticalVelocity -= so.Gravity * Time.deltaTime;
+            }
+        }
     }
 }
