@@ -8,7 +8,7 @@ public class SlopeDetector : MonoBehaviour
 {
     [SerializeField] private MovementStatsSO so;
     [SerializeField] private Transform[] rayOrigins;
-    [SerializeField] private float[] rayLengths;
+    [SerializeField] private Vector3[] rayVectors;
     [SerializeField] private LayerMask layerMask;
 
     [Header("Debug")]
@@ -29,7 +29,7 @@ public class SlopeDetector : MonoBehaviour
         for (int i = 0 ; i < rayOrigins.Length ; i ++)
         {
             Transform currRayOrigin = rayOrigins[i];
-            if (Physics.Raycast(currRayOrigin.position, -currRayOrigin.up, out RaycastHit raycastHit, rayLengths[i], layerMask))
+            if (Physics.Raycast(currRayOrigin.position, rayVectors[i], out RaycastHit raycastHit, rayVectors[i].magnitude, layerMask))
             {
                 hits.Add(raycastHit);
             }
@@ -58,7 +58,7 @@ public class SlopeDetector : MonoBehaviour
         for (int i = 0; i < rayOrigins.Length; i++)
         {
             Transform rayOrigin = rayOrigins[i];
-            Gizmos.DrawRay(rayOrigin.position, -rayOrigin.up * rayLengths[i]);
+            Gizmos.DrawRay(rayOrigin.position, rayVectors[i]);
         }
     }
 }

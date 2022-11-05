@@ -369,7 +369,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3924066660692794947}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.845, z: 0.473}
+  m_LocalPosition: {x: 0, y: -0.95, z: 0.201}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -480,8 +480,10 @@ MonoBehaviour:
   so: {fileID: 11400000, guid: dcbf64020041dba40b7d1a56acde63a0, type: 2}
   rayOrigins:
   - {fileID: 4474562846735934648}
-  rayLengths:
-  - 0.5
+  - {fileID: 1291836592775679469}
+  rayVectors:
+  - {x: 0, y: -0.3, z: 0}
+  - {x: 0, y: 0, z: 0.45}
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -510,7 +512,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8825858012133251091}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.845, z: 0}
+  m_LocalPosition: {x: 0, y: -0.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
