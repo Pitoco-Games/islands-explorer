@@ -20,6 +20,7 @@ public class Movement : MonoBehaviour
     private List<RaycastHit> currRaycastHits;
     private bool slopeIsClimbable;
 
+    private int remainingJumps;
     private bool isReversing;
     private bool isGrounded;
     private bool jumped;
@@ -90,8 +91,14 @@ public class Movement : MonoBehaviour
 
     public void Jump()
     {
-        if (isGrounded)
+        if (remainingJumps > 0)
         {
+            remainingJumps--;
+            if (accumulatedVerticalVelocity < 0)
+            {
+                accumulatedVerticalVelocity = 0;
+            }
+
             accumulatedVerticalVelocity += so.JumpStrength;
         }
     }
@@ -99,6 +106,11 @@ public class Movement : MonoBehaviour
     private void FixedUpdate()
     {
         isGrounded = groundedDetector.OverlapSphereIsColliding();
+        if (isGrounded)
+        {
+            remainingJumps = so.JumpQuantity;
+        }
+
         currRaycastHits = slopeDetector.GetAllHits();
         slopeIsClimbable = slopeDetector.GetSlopeIsClimbable(currRaycastHits);
 

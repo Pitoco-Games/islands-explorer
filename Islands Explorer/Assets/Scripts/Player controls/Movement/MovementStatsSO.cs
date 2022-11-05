@@ -11,12 +11,17 @@ public class MovementStatsSO : ScriptableObject
    public float Acceleration;
    public float Deceleration;
    public float TurnSpeed;
-   public float JumpStrength;
    public float MovementAngleLimitToReverse;
    public float ReverseDeceleration;
    public float MaxSlopeAngle;
 
    [Header("Jump")]
+   public float JumpStrength;
    public float FallSpeedMultiplier;
    public float Gravity;
+   public int JumpQuantity;
+
+   [Header("Air movement")]
+   public float AirAcceleration;
+   public float AirDeceleration;
 }
