@@ -16,9 +16,13 @@ MonoBehaviour:
   Acceleration: 60
   Deceleration: 100
   TurnSpeed: 800
-  JumpStrength: 14
   MovementAngleLimitToReverse: 90
   ReverseDeceleration: 100
   MaxSlopeAngle: 45
+  JumpStrength: 14
   FallSpeedMultiplier: 3.5
   Gravity: 30
+  JumpQuantity: 1
+  TerminalVelocity: 30
+  AirAcceleration: 0
+  AirDeceleration: 0
