@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: PlayerMovementStats
   m_EditorClassIdentifier: 
   MaxVelocity: 500
-  Acceleration: 20
-  Deceleration: 50
+  Acceleration: 60
+  Deceleration: 100
   TurnSpeed: 800
-  JumpStrength: 10
+  JumpStrength: 14
   MovementAngleLimitToReverse: 90
   ReverseDeceleration: 100
   MaxSlopeAngle: 45
-  FallSpeedMultiplier: 2.5
+  FallSpeedMultiplier: 3.5
   Gravity: 30
