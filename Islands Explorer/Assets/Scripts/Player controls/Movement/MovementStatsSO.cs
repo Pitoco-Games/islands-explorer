@@ -20,6 +20,7 @@ public class MovementStatsSO : ScriptableObject
    public float FallSpeedMultiplier;
    public float Gravity;
    public int JumpQuantity;
+   public float TerminalVelocity;
 
    [Header("Air movement")]
    public float AirAcceleration;

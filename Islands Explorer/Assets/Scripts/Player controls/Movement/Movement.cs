@@ -161,7 +161,9 @@ public class Movement : MonoBehaviour
             if (accumulatedVerticalVelocity < 0)
             {
                 accumulatedVerticalVelocity -= so.Gravity * so.FallSpeedMultiplier * Time.deltaTime;
-
+                accumulatedVerticalVelocity = accumulatedVerticalVelocity > so.TerminalVelocity
+                    ? so.TerminalVelocity
+                    : accumulatedVerticalVelocity;
             }
             else
             {
