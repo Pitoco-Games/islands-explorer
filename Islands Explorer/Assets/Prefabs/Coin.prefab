@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1661894828783231563}
   - component: {fileID: 2449255758141426099}
-  - component: {fileID: 342295269479934841}
+  - component: {fileID: 6889705842147253209}
   m_Layer: 0
   m_Name: Coin
   m_TagString: Coin
@@ -47,7 +47,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &342295269479934841
+--- !u!114 &6889705842147253209
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,9 +56,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2443081018648369548}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8eb85d8751ccbb948a19ed430571ca52, type: 3}
+  m_Script: {fileID: 11500000, guid: ae5025fa7ea252e4681b35b5322bd72c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!1 &3953589147360449103
 GameObject:
   m_ObjectHideFlags: 0
@@ -169,8 +170,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5313808659039121767}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.124626026, y: 0.82471, z: 0.053366}
+  m_LocalPosition: {x: 0.013, y: 0, z: 0}
+  m_LocalScale: {x: 0.16004473, y: 0.82471, z: 0.13268389}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7005988302226931274}

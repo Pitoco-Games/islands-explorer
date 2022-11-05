@@ -110,6 +110,7 @@ GameObject:
   - component: {fileID: 1526483914587854985}
   - component: {fileID: 1526483914587854990}
   - component: {fileID: 1526483914587854991}
+  - component: {fileID: 1940457705}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -164,6 +165,18 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1940457705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526483914587854988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955b6d0f0cb6310479c3f711c9ab7306, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1526483914675741226
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,7 +220,6 @@ GameObject:
   - component: {fileID: 1526483914981439353}
   - component: {fileID: 1526483914981439355}
   - component: {fileID: 1526483914981439352}
-  - component: {fileID: 4145014130356370225}
   m_Layer: 0
   m_Name: Mechanics
   m_TagString: Untagged
@@ -263,18 +275,6 @@ MonoBehaviour:
   camera: {fileID: 0}
   groundedDetector: {fileID: 6559060215107998296}
   slopeDetector: {fileID: 7127501145006135208}
---- !u!114 &4145014130356370225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1526483914981439358}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 955b6d0f0cb6310479c3f711c9ab7306, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2248928785417005617
 GameObject:
   m_ObjectHideFlags: 0
