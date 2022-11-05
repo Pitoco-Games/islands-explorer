@@ -8,7 +8,9 @@ public class ItemCollector : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if(collision.gameObject.CompareTag("Coin"))
+        GameObject colliderGameObject = collision.gameObject;
+
+        if(colliderGameObject.CompareTag("Coin"))
         {
             Destroy(collision.gameObject);
             coinsCollected++;
