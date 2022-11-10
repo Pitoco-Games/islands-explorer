@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObject/Player stats/Movement")]
@@ -21,6 +18,12 @@ public class MovementStatsSO : ScriptableObject
    public float Gravity;
    public int JumpQuantity;
    public float TerminalVelocity;
+
+   [Header("Dash")]
+   public float DashDistance;
+   public float DashDuration;
+   public int AirDashAmount;
+   public float DashCooldown;
 
    [Header("Air movement")]
    public float AirAcceleration;

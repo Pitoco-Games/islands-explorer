@@ -15,11 +15,15 @@ public class InputManager : MonoBehaviour
     {
         var xAxisInput = Input.GetAxisRaw("Horizontal");
         var zAxisInput = Input.GetAxisRaw("Vertical");
-        var zMovement = 0;
 
         if (Input.GetKeyDown("space"))
         {
             movement.Jump();
+        }
+
+        if (Input.GetKeyDown("left shift"))
+        {
+            movement.Dash(xAxisInput, zAxisInput);
         }
 
         movement.Walk(xAxisInput, zAxisInput);

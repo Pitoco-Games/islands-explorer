@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class Movement : MonoBehaviour
@@ -18,15 +19,23 @@ public class Movement : MonoBehaviour
     private float lastXAxisInput;
     private float lastZAxisInput;
     private List<RaycastHit> currRaycastHits;
-    private bool slopeIsClimbable;
-
     private int remainingJumps;
+    private int remainingDashes;
+
+    private bool slopeIsClimbable;
     private bool isReversing;
     private bool isGrounded;
+    private bool isDashing;
+    private bool dashIsInCooldown;
     private bool jumped;
 
     public void Walk(float xAxisInput, float zAxisInput)
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         if (isReversing)
         {
             DecelerateFromWalk(so.ReverseDeceleration);
@@ -91,30 +100,93 @@ public class Movement : MonoBehaviour
 
     public void Jump()
     {
-        if (remainingJumps > 0)
+        if (isDashing || remainingJumps == 0)
         {
-            remainingJumps--;
-            if (accumulatedVerticalVelocity < 0)
-            {
-                accumulatedVerticalVelocity = 0;
-            }
-
-            accumulatedVerticalVelocity += so.JumpStrength;
+            return;
         }
+
+        remainingJumps--;
+        if (accumulatedVerticalVelocity < 0)
+        {
+            accumulatedVerticalVelocity = 0;
+        }
+
+        accumulatedVerticalVelocity += so.JumpStrength;
+    }
+
+    public void Dash(float xAxisInput, float zAxisInput)
+    {
+        if (isDashing || dashIsInCooldown || remainingDashes == 0)
+        {
+            return;
+        }
+
+        isDashing = true;
+        dashIsInCooldown = true;
+        remainingDashes--;
+
+        if (xAxisInput == 0 && zAxisInput == 0)
+        {
+            var forward = targetTransform.forward;
+            xAxisInput = forward.x;
+            zAxisInput = forward.z;
+        }
+        StartCoroutine(DashCoroutine(xAxisInput, zAxisInput));
+    }
+
+    private IEnumerator DashCoroutine(float xAxisInput, float zAxisInput)
+    {
+        float remainingDashTime = so.DashDuration;
+
+        var dashDirection = CalculateCameraRelativeMoveDirection(xAxisInput, zAxisInput).normalized;
+        Vector3 currPosition = targetTransform.position;
+        var finalPosition = currPosition + dashDirection * so.DashDistance;
+
+        double moveDelta = Vector3.Distance(finalPosition, currPosition);
+        float moveSpeed = (float) moveDelta / so.DashDuration;
+
+        targetTransform.forward = dashDirection;
+        while (remainingDashTime > 0 && slopeIsClimbable)
+        {
+            //RotateCharacterTowardsMoveDirection(xAxisInput, zAxisInput, so.TurnSpeed);
+            rb.velocity = GetSlopeCorrectedMovementVector(dashDirection) * moveSpeed;
+
+            remainingDashTime -= Time.deltaTime;
+            yield return null;
+        }
+
+        isDashing = false;
+
+        var dashCooldown = so.DashCooldown;
+        while (dashCooldown > 0)
+        {
+            dashCooldown -= Time.deltaTime;
+            yield return null;
+        }
+
+        dashIsInCooldown = false;
     }
 
     private void FixedUpdate()
     {
+        currRaycastHits = slopeDetector.GetAllHits();
+        slopeIsClimbable = slopeDetector.GetSlopeIsClimbable(currRaycastHits);
+
+        if (isDashing)
+        {
+            return;
+        }
+
         isGrounded = groundedDetector.OverlapSphereIsColliding();
         if (isGrounded)
         {
             remainingJumps = so.JumpQuantity;
+            remainingDashes = so.AirDashAmount;
         }
 
-        currRaycastHits = slopeDetector.GetAllHits();
-        slopeIsClimbable = slopeDetector.GetSlopeIsClimbable(currRaycastHits);
-
-        rb.velocity = GetSlopeCorrectedWalkVector() + Vector3.up * accumulatedVerticalVelocity;
+        Vector3 slopeCorrectedMoveVector = GetSlopeCorrectedMovementVector(targetTransform.forward);
+        float moveAmount = accumulatedHorizontalVelocity * Time.deltaTime;
+        rb.velocity = slopeCorrectedMoveVector * moveAmount + Vector3.up * accumulatedVerticalVelocity;
 
         if (accumulatedHorizontalVelocity > 0 && lastXAxisInput == 0 && lastZAxisInput == 0)
         {
@@ -124,32 +196,33 @@ public class Movement : MonoBehaviour
         ApplyGravity();
     }
 
-    private Vector3 GetSlopeCorrectedWalkVector()
+    private Vector3 GetSlopeCorrectedMovementVector(Vector3 moveDirection)
     {
-        float deltaTimeCorrectedWalkVelocity = accumulatedHorizontalVelocity * Time.deltaTime;
-
         if (currRaycastHits.Count == 0)
         {
-            return deltaTimeCorrectedWalkVelocity * targetTransform.forward;
+            return moveDirection;
         }
 
         if (slopeIsClimbable)
         {
             Quaternion slopeRotation = Quaternion.FromToRotation(Vector3.up, currRaycastHits[0].normal);
-            Vector3 adjustedVector = slopeRotation * targetTransform.forward * deltaTimeCorrectedWalkVelocity;
+            Vector3 adjustedVector = slopeRotation * moveDirection;
 
             Debug.DrawRay(transform.position, adjustedVector, Color.blue);
 
             return adjustedVector;
         }
-        else
-        {
-            return Vector3.zero;
-        }
+
+        return Vector3.zero;
     }
 
     private void ApplyGravity()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         if (isGrounded && accumulatedVerticalVelocity < 0 && slopeIsClimbable)
         {
             accumulatedVerticalVelocity = 0;
@@ -161,7 +234,7 @@ public class Movement : MonoBehaviour
             if (accumulatedVerticalVelocity < 0)
             {
                 accumulatedVerticalVelocity -= so.Gravity * so.FallSpeedMultiplier * Time.deltaTime;
-                accumulatedVerticalVelocity = accumulatedVerticalVelocity > so.TerminalVelocity
+                accumulatedVerticalVelocity = accumulatedVerticalVelocity < so.TerminalVelocity
                     ? so.TerminalVelocity
                     : accumulatedVerticalVelocity;
             }
