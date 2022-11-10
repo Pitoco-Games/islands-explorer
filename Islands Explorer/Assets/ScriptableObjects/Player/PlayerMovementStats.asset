@@ -23,10 +23,6 @@ MonoBehaviour:
   FallSpeedMultiplier: 3.5
   Gravity: 30
   JumpQuantity: 1
-  TerminalVelocity: -50
-  DashDistance: 10
-  DashDuration: 0.5
-  AirDashAmount: 0
-  DashCooldown: 0
+  TerminalVelocity: 30
   AirAcceleration: 0
   AirDeceleration: 0
