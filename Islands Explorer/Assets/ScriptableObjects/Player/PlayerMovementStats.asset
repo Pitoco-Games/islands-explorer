@@ -23,6 +23,6 @@ MonoBehaviour:
   FallSpeedMultiplier: 3.5
   Gravity: 30
   JumpQuantity: 1
-  TerminalVelocity: 30
+  TerminalVelocity: -30
   AirAcceleration: 0
   AirDeceleration: 0
